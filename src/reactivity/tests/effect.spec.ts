@@ -71,6 +71,11 @@ describe('effect', () => {
     // stopped effect should still be manually callable
     runner();
     expect(dummy).toBe(3);
+    stop(runner);
+    obj.prop++;
+    expect(dummy).toBe(3);
+    runner();
+    expect(dummy).toBe(4);
   });
   it('onStop', () => {
     const obj = reactive({
