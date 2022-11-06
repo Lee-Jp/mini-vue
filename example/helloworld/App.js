@@ -1,3 +1,4 @@
+import { h } from '../../lib/guild-mini-vue.esm.js';
 export const App = {
 
   render(){
