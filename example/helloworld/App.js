@@ -8,6 +8,12 @@ export const App = {
       {
         id: 'root',
         class: ['red', 'hard'],
+        onClick() {
+          console.log('1');
+        },
+        onMousedown() {
+          console.log('%c mouse', 'color: red');
+        },
       },
       // [h('p', { class: 'red' }, 'hi'), h('p', { class: 'blue' }, 'mini-vue')]
       // 'hei'
