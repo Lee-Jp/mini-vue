@@ -7,9 +7,9 @@ export const App = {
         id: 'root',
         class: ['red', 'hard'],
       },
-      [h('p', { class: 'red' }, 'hi'), h('p', { class: 'blue' }, 'mini-vue')]
+      // [h('p', { class: 'red' }, 'hi'), h('p', { class: 'blue' }, 'mini-vue')]
       // 'hei'
-      // this.msg
+      this.msg
     );
   },
 

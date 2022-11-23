@@ -2,6 +2,7 @@ export function createComponentInstance(vnode) {
   const component = {
     vnode,
     type: vnode.type,
+    setupState: {},
   };
   return component;
 }
@@ -12,6 +13,18 @@ export function setupComponent(instance) {
 
 function setupStatefulComponent(instance: any) {
   const Compoent = instance.type;
+  instance.proxy = new Proxy(
+    {},
+    {
+      get(target, key) {
+        // setupState
+        const { setupState } = instance;
+        if (key in setupState) {
+          return setupState[key];
+        }
+      },
+    }
+  );
   const { setup } = Compoent;
   if (setup) {
     const setupResult = setup();

@@ -22,14 +22,14 @@ function mountComponent(vnode: any, container: any) {
   setupRenderEffect(instance, container);
 }
 function setupRenderEffect(instance: any, container: any) {
-  const subTree = instance.render();
+  const {proxy} = instance;
+  const subTree = instance.render.call(proxy);
   patch(subTree, container);
 }
 function processElement(vnode: any, container: any) {
   mountElement(vnode, container);
 }
 function mountElement(vnode: any, container: any) {
-  debugger;
   const el = document.createElement(vnode.type);
   const { children, props } = vnode;
   if (typeof children === 'string') {
