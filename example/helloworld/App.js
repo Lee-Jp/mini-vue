@@ -1,6 +1,8 @@
 import { h } from '../../lib/guild-mini-vue.esm.js';
+window.self = null;
 export const App = {
   render() {
+    window.self = this;
     return h(
       'div',
       {
