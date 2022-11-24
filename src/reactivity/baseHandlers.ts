@@ -45,7 +45,7 @@ export const mutableHandlers = {
 export const readOnlyHandlers = {
   get: readonlyGet,
   set(target, key, value) {
-    console.warn(`${key}readonly 不允许 set${value}`);
+    console.warn(`key:${key}是readonly 不允许 set value为:${value}`);
     return true;
   },
 };
