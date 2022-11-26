@@ -6,13 +6,23 @@ export function render(vnode, container) {
   patch(vnode, container);
 }
 function patch(vnode, container) {
-  console.log('vnode :>> ', vnode);
-  const { shapeFlag } = vnode;
-  if (shapeFlag & ShapeFlags.ELEMENT) {
-    processElement(vnode, container);
-  } else if (shapeFlag && ShapeFlags.STATEFUL_COMPONENT) {
-    processComponent(vnode, container);
+  const { type, shapeFlag } = vnode;
+  // Fragment => 只渲染 children
+  switch (type) {
+    case 'Fragment':
+      processFragment(vnode, container);
+      break;
+
+    default:
+      if (shapeFlag & ShapeFlags.ELEMENT) {
+        processElement(vnode, container);
+      } else if (shapeFlag && ShapeFlags.STATEFUL_COMPONENT) {
+        processComponent(vnode, container);
+      }
   }
+}
+function processFragment(vnode: any, container: any) {
+  mountChildren(vnode, container);
 }
 function processElement(vnode: any, container: any) {
   mountElement(vnode, container);
@@ -26,14 +36,14 @@ function mountElement(vnode: any, container: any) {
     mountChildren(vnode, el);
   }
   for (const key in props) {
-    console.log(key)
+    console.log(key);
     const val = props[key];
     // on + EventName
-    const isOn = (key:string) => /^on[A-Z]/.test(key)
-    if(isOn(key)){
-      const event = key.slice(2).toLowerCase()
-      el.addEventListener(event,val)
-    }else{
+    const isOn = (key: string) => /^on[A-Z]/.test(key);
+    if (isOn(key)) {
+      const event = key.slice(2).toLowerCase();
+      el.addEventListener(event, val);
+    } else {
       el.setAttribute(key, val);
     }
   }
