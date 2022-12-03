@@ -6,9 +6,29 @@ export const App = {
     const onClick = () => {
       count.value++;
     };
+    const props = ref({
+      foo: 'foo',
+      bar:'bar'
+    })
+    const onChangePropsDemo1 = ()=>{
+      props.value.foo = 'new foo'
+    }
+    const onChangePropsDemo2 = () =>{
+      props.value.foo = undefined;
+    }
+
+    const onChangePropsDemo3 = () =>{
+      props.value = {
+        foo: 'foo'
+      }
+    }
     return {
       count,
       onClick,
+      onChangePropsDemo1,
+      onChangePropsDemo2,
+      onChangePropsDemo3,
+      props
     };
   },
   render() {
@@ -16,6 +36,7 @@ export const App = {
       'div',
       {
         id: 'root',
+        ...this.props
       },
       [
         h('div', {}, 'count:' + this.count),
@@ -25,6 +46,27 @@ export const App = {
             onClick: this.onClick,
           },
           'click'
+        ),
+        h(
+          'button',
+          {
+            onClick: this.onChangePropsDemo1,
+          },
+          'onChangePropsDemo1 - 值改变了，修改'
+        ),
+        h(
+          'button',
+          {
+            onClick: this.onChangePropsDemo2,
+          },
+          'onChangePropsDemo2 - 值变成了 undefined 删除'
+        ),
+        h(
+          'button',
+          {
+            onClick: this.onChangePropsDemo3,
+          },
+          'onChangePropsDemo3 - key在新的里面没有了 删除'
         ),
       ]
     );
