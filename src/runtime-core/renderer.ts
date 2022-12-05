@@ -212,7 +212,7 @@ export function createRenderer(options) {
           newIndex = keyToNewIndexMap.get(prevChild.key);
         } else {
           // 否则要循环找 On
-          for (let j = s2; j < e2; j++) {
+          for (let j = s2; j <= e2; j++) {
             if (isSomeVNodeType(prevChild, c2[j])) {
               newIndex = j;
               break;
