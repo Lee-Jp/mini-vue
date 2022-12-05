@@ -2,6 +2,7 @@ import { effect } from '../reactivity/effect';
 import { EMPTY_OBJ, isObject } from '../shared/index';
 import { ShapeFlags } from '../shared/shapeFlags';
 import { createComponentInstance, setupComponent } from './components';
+import { shouldUpdateComponent } from './componentUpdateUtils';
 import { createAppAPI } from './createApp';
 import { Fragment, Text } from './vnode';
 
@@ -298,7 +299,11 @@ export function createRenderer(options) {
     parentComponent: any,
     anchor: any
   ) {
-    mountComponent(n2, container, parentComponent, anchor);
+    if (!n1) {
+      mountComponent(n2, container, parentComponent, anchor);
+    } else {
+      updateComponent(n1, n2);
+    }
   }
 
   function mountComponent(
@@ -307,17 +312,32 @@ export function createRenderer(options) {
     parentComponent: any,
     anchor: any
   ) {
-    const instance = createComponentInstance(initialVNode, parentComponent);
+    const instance = (initialVNode.component = createComponentInstance(
+      initialVNode,
+      parentComponent
+    ));
     setupComponent(instance);
     setupRenderEffect(instance, initialVNode, container, anchor);
   }
+
+  function updateComponent(n1, n2) {
+    const instance = (n2.component = n1.component);
+    if (shouldUpdateComponent(n1, n2)) {
+      instance.next = n2;
+      instance.update();
+    } else {
+      n2.el = n1.el;
+      instance.vnode = n2;
+    }
+  }
+
   function setupRenderEffect(
     instance: any,
     initialVNode: any,
     container: any,
     anchor
   ) {
-    effect(() => {
+    instance.update = effect(() => {
       if (!instance.isMounted) {
         console.log('%c 初始化', 'color: red');
         const { proxy } = instance;
@@ -327,7 +347,11 @@ export function createRenderer(options) {
         instance.isMounted = true;
       } else {
         console.log('%c 更新', 'color: red');
-        const { proxy } = instance;
+        const { proxy, next, vnode } = instance;
+        if (next) {
+          next.el = vnode.el;
+          updateComponentPreRender(instance, next);
+        }
         const subTree = instance.render.call(proxy);
         const prevSubTree = instance.subTree;
         instance.subTree = subTree;
@@ -339,7 +363,11 @@ export function createRenderer(options) {
     createApp: createAppAPI(render),
   };
 }
-
+function updateComponentPreRender(instance, nextVNode) {
+  instance.vnode = nextVNode;
+  instance.next = null;
+  instance.props = nextVNode.props;
+}
 function getSequence(arr: number[]): number[] {
   const p = arr.slice();
   const result = [0];
