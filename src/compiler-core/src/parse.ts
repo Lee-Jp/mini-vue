@@ -8,7 +8,7 @@ export function baseParse(content: string) {
   return createRoot(parseChildren(context, []));
 }
 function createRoot(children) {
-  return { children };
+  return { children, type: NodeTypes.ROOT };
 }
 
 function createParserContext(content: string) {
@@ -68,7 +68,6 @@ function parseText(context: any): any {
 
 function parseTextData(context: any, length) {
   const content = context.source.slice(0, length);
-  console.log('content ---------------------:>> ', content);
   advanceBy(context, length);
   return content;
 }
@@ -97,7 +96,6 @@ function startsWithEndTagOpen(source, tag) {
 
 function parseTag(context: any, type: TagType) {
   const match: any = /^<(\/?[a-z]*)/i.exec(context.source);
-  console.log('match :>> ', match);
   const tag = match[1];
   // 删除处理完成的代码
   advanceBy(context, match[0].length);
